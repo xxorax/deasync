@@ -1,23 +1,19 @@
-#include <node.h>
+#include <uv.h>
 #include <v8.h>
+#include <napi.h>
+#include <uv.h>
+#include <node.h>
 
-using namespace v8;
-uv_idle_t idler;
-
-static void crunch_away(uv_idle_t* handle, int status) {
-    uv_idle_stop(handle);
+Napi::Value Run(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+  uv_run(node::GetCurrentEventLoop(v8::Isolate::GetCurrent()), UV_RUN_ONCE);
+  return env.Undefined();
 }
 
-static Handle<Value> Run(const Arguments& args) {
-  HandleScope scope;
-  uv_idle_start(&idler, crunch_away);
-  uv_run(uv_default_loop(), UV_RUN_ONCE);
-  return scope.Close(Undefined());
+static Napi::Object init(Napi::Env env, Napi::Object exports) {
+  exports.Set(Napi::String::New(env, "run"), Napi::Function::New(env, Run));
+  return exports;
 }
 
-static void Init(Handle<Object> target) {
-  node::SetMethod(target, "run", Run);
-  uv_idle_init(uv_default_loop(), &idler);
-}
-
-NODE_MODULE(deasync, Init)
+NODE_API_MODULE(deasync, init)

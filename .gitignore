@@ -1,4 +1,9 @@
-build
-node_modules
+/build
+/node_modules
 /.project
 /bin
+/.c9
+/.node-gyp
+/test/
+/node-src/
+*.sublime-workspace

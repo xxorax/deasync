@@ -1,2 +1,8 @@
-build
-/.project
+build/
+.project/
+.c9/
+.node-gyp
+test/
+node-src/
+*.sublime-project
+*.sublime-workspace
